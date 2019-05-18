@@ -65,6 +65,6 @@ public class AppTest
      */
     public void testCalculatorService() {  
     	
-    	assertEquals(0, a.perform(5, 5) );
+    	assertEquals(20, a.perform(5, 5) );
     }
 }

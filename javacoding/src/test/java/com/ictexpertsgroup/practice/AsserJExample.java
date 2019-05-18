@@ -12,7 +12,7 @@ public class AsserJExample {
 	@Test
 	public void test() {
 		int testResult1 = 5;
-		int testResult2=3, testResult3 = 4;
+		int testResult2=4, testResult3 = 3;
 		
 		
 // 

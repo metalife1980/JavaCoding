@@ -51,7 +51,7 @@ public class TestCalculatorService {
 		 * to set the expected hard coded result based on any spcific call like below e are passing 5, 5 values 
 		 * in parameter.
 		 */
-		//when(service.Add(5, 5)).thenReturn(10);
+		when(service.Add(5, 5)).thenReturn(10);
 		assertEquals(20, mc.perform(5, 5));
 		/*
 		 * verify is the mockito static function that can be called 
