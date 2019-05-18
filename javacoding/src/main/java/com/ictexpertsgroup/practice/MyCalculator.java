@@ -37,6 +37,10 @@ public class MyCalculator{
 		return service.Add(a, b) * 2;  // any logic 
 	}
 	
+	public int subtract(int a, int b ) {
+		return service.Subtract(a, b);  // any logic 
+	}
+	
 	public static void main( String[] args )
     {
 //        System.out.println( "Hello World!" );

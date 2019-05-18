@@ -14,14 +14,18 @@ public class AppTest
 	private MyCalculator a=null;
 	private Util u=null;
 	
-	CalculatorService service = new CalculatorService() {
+	CalculatorService service = new CalculatorImpl();
+	/* 
+	 * the following code is example of stub
+	 * 
+	 * CalculatorService service = new CalculatorService() {
 		
 		@Override
 		public int Add(int a, int b) {
 			// TODO Auto-generated method stub
 			return 0;
 		}
-	};
+	};*/
 	
 	@Before
 	public void setup() {
