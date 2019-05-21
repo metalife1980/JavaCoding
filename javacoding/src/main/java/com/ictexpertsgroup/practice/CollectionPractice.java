@@ -1,16 +1,32 @@
 package com.ictexpertsgroup.practice;
 
+import java.lang.reflect.Array;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.Deque;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.ListIterator;
+import java.util.Map;
+import java.util.NavigableSet;
+import java.util.Optional;
 import java.util.PriorityQueue;
 import java.util.Queue;
+import java.util.Set;
+import java.util.SortedSet;
+import java.util.TreeSet;
+import java.util.function.Function;
+import java.util.function.Predicate;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /*
  * This class is created to test and practice different kind of collections.
@@ -182,6 +198,7 @@ public class CollectionPractice {
 		// bookList.forEach(System.out::println);
 //		bookList.forEach(Book::printTopRatedBooks);
 		bookList.forEach(new Filter());
+		
 
 		// Testing of list iterator iterface that is extedned from iterator.
 		System.out.println("\n\nTesting ListIterator interface\n\n");
@@ -327,6 +344,372 @@ public class CollectionPractice {
 //		}
 	}
 
+	public static void hashSetTest() {
+		Set<CreditRank> hsCreditRank = new HashSet<CreditRank>();
+		hsCreditRank.add(new CreditRank(1,"Poor"));
+		hsCreditRank.add(new CreditRank(2,"Improved"));
+		hsCreditRank.add(new CreditRank(3,"Good"));
+
+		List<CreditRank> listCreditRank = new ArrayList<CreditRank>();
+		listCreditRank.add(new CreditRank(4,"Better"));
+		listCreditRank.add(new CreditRank(5,"Best"));
+		listCreditRank.add(new CreditRank(1,"Poor")); // this is duplicate item and will not be added in hashset
+		
+		hsCreditRank.addAll(listCreditRank);
+		
+		hsCreditRank.forEach(System.out::println);
+		
+		//practice remove methods 
+		System.out.println(hsCreditRank.contains(new CreditRank(1,"Poor")));
+		
+	}
+
+	public static void linkedHashSetTest() {  
+		/*
+		 * LinkedHashSet internally use linked list and hashMap and it preservers the insertion order
+		 */
+		Set<CreditRank> lhsCreditRank = new LinkedHashSet<CreditRank>();
+
+		List<CreditRank> listCreditRank = new ArrayList<CreditRank>();
+		listCreditRank.add(new CreditRank(4,"Better"));
+		listCreditRank.add(new CreditRank(5,"Best"));
+		listCreditRank.add(new CreditRank(1,"Poor")); // this is duplicate item and will not be added in hashset
+		
+		lhsCreditRank.addAll(listCreditRank);
+		lhsCreditRank.add(new CreditRank(1,"Poor"));
+		lhsCreditRank.add(new CreditRank(2,"Improved"));
+		lhsCreditRank.add(new CreditRank(3,"Good"));
+		
+		lhsCreditRank.forEach(System.out::println);
+		
+		//practice remove methods 
+		System.out.println(lhsCreditRank.contains(new CreditRank(1,"Poor")));
+		
+	}
+
+	public static void sortedSetTest() {
+		TreeSet<CreditRank> ts = new TreeSet<CreditRank>();
+		List<CreditRank> listCreditRank = new ArrayList<CreditRank>();
+		listCreditRank.add(new CreditRank(4,"Better"));
+		listCreditRank.add(new CreditRank(5,"Best"));
+		listCreditRank.add(new CreditRank(1,"Poor")); // this is duplicate item and will not be added in hashset
+		
+		ts.addAll(listCreditRank);
+		ts.add(new CreditRank(1,"Poor"));
+		ts.add(new CreditRank(2,"Improved"));
+		ts.add(new CreditRank(3,"Good"));
+		
+		ts.forEach(System.out::println);
+		
+		System.out.println("\n\nTesting with Comparator\n\n");
+		TreeSet<CreditRank> ts2 = new TreeSet<>( new RankComparator() );
+		List<CreditRank> listCreditRank2 = new ArrayList<CreditRank>();
+		listCreditRank2.add(new CreditRank(4,"Better"));
+		listCreditRank2.add(new CreditRank(5,"Best"));
+		listCreditRank2.add(new CreditRank(1,"Poor")); // this is duplicate item and will not be added in hashset
+		
+		ts2.addAll(listCreditRank2);
+		ts2.add(new CreditRank(1,"Poor"));
+		ts2.add(new CreditRank(2,"Improved"));
+		ts2.add(new CreditRank(3,"Good"));
+		
+		ts2.forEach(System.out::println);
+		
+		
+	}
+
+	public static void navigableSetTest () {
+
+		
+		NavigableSet<Integer> nsT = new TreeSet<Integer>();
+		nsT.add(5);
+		nsT.add(23);
+		nsT.add(74);
+		nsT.add(89);
+		
+		System.out.println("lower:" + nsT.lower(74));
+		System.out.println("floor:" + nsT.floor(74));
+		System.out.println("celing:" + nsT.ceiling(74));
+		System.out.println("higher:" + nsT.higher(74));
+		System.out.println("first:" + nsT.first());
+		System.out.println("last:" + nsT.last());
+		
+		System.out.println(nsT);
+		
+		Iterator<Integer> it =  nsT.descendingIterator();
+		while (it.hasNext()) {
+			System.out.println("desc iterator:" + it.next());
+		}
+
+		//if any change made in the subset descending set, tailset or headset return objectsm, changes will also be made to the super set.
+		NavigableSet< Integer> descendingSet = nsT.descendingSet();
+		System.out.println(descendingSet);
+		descendingSet.remove(23);
+		System.out.println("\n AFter removing 23 ");
+		System.out.println(nsT);
+		
+		descendingSet.add(23);
+		System.out.println("\nAdd 23 againt to the set");
+		System.out.println(nsT);
+
+		//test tail set and head set
+		NavigableSet<Integer> tailset = nsT.tailSet(74, true);
+		System.out.println("\nTailset :: " + tailset);
+		
+		NavigableSet<Integer> headset = nsT.headSet(74, true);
+		System.out.println("\nheadset :: " + headset);
+		
+		headset.add(4); // you cannot add an
+		
+		System.out.println("super set  :" + nsT);
+		
+		// now add some value to the tail set and seet the superset
+		tailset.add(100);
+		System.out.println("super set  :" + nsT);		
+		
+		NavigableSet<Integer> ss = 	(NavigableSet<Integer>) nsT.subSet(23, 89);
+		
+		SortedSet<Integer> sortedset = nsT.subSet(23, 89);
+		
+		System.out.println(ss);
+		System.out.println(sortedset);
+	 
+		sortedset.add(25);
+		ss.add(60);
+		System.out.println(nsT);
+	}
+	
+	public static void hashMapTest() {
+		Map<String, Integer> m = new HashMap<String, Integer>();
+		m.put("Poor", 0);
+		m.put("Improved", 1);
+		m.put("Good", 2);
+		m.put("Better", 3	);
+		
+		for (Map.Entry<String, Integer> e : m.entrySet()) {
+			System.out.println("Key Value Pair:" + e.getKey() + " - " + e.getValue());
+		}
+		
+		System.out.println(m.get("Poor"));
+		m.put("Poor",1);
+		System.out.println(m);
+		
+		m.putIfAbsent("Excellent", 4);
+		System.out.println(m);
+
+		m.putIfAbsent("Excellent", 5);
+		System.out.println(m);
+		
+		HashMap<String, Integer> hm = new HashMap<String, Integer>();
+		hm.putAll(m);
+		
+		System.out.println("new hashmap from old hashmap:" + hm);
+		hm.put("Excellent", 5);
+		System.out.println("old hashmap"+ m);
+		System.out.println("new hashmap:" + hm);
+		
+//		m.remove("Poor");
+//		System.out.println("old hashmap"+ m);
+//		
+//		m.remove("Good", 7);
+//		System.out.println("old hashmap"+ m);
+//
+//		m.remove("Good", 2);
+//		System.out.println("old hashmap"+ m);
+		
+		System.out.println(m.replace("Poor", 0));
+		System.out.println(m.replace("Poor", 0, 11));
+		
+		m.replaceAll((k,v)->{
+			Integer nv=0;
+			if (k.equals("Poor") || k.equals("Good")) {
+				nv= -1;
+			}
+			return nv;
+		});
+		
+		System.out.println("old hashmap"+ m);
+		
+		
+		// test hasmap with creditrank class and books java class.
+		
+		// iterate keys and values...
+		// use maps and streams....
+		
+	}
+	
+	
+	static boolean filter(String doc, Predicate<String> filterDoc) {
+		return filterDoc.test(doc);
+		
+	}
+
+	
+	public static void testFunctionInterfaces() {
+		String doc1 = "<html><body>One of the most common uses of <i>streams</i> is to represent queries over data in collections</body></html>";
+		String doc2 = "<html><body>Information integration systems provide valuable services to users by integrating information from a number of autonomous, heterogeneous and distributed Web sources</body></html>";
+		String doc3 = "<html><body>Solr is the popular, blazing fast open source enterprise search platform from the Apache Lucene</body></html>";
+		String doc4 = "<html><body>Java 8 goes one more step ahead and has developed a streams API which lets us think about parallelism</body></html>";
+		List<String> documents = new ArrayList<String>(Arrays.asList(doc1,doc2,doc3,doc4));
+		
+		Predicate<String> p = (str) -> str.contains("streams"); // this is lambda expression
+		Function<String, String> transform = (str) -> {
+			return str.replace("<html><body>", " ");
+			};		
+			
+		Function <String, String> replaceSpaceToEndLine = (str) -> str.replaceAll("\\s", "\n") ;	
+		
+		for (String doc : documents) {
+			if(p.test(doc)) {
+				System.out.println("stream keyword found");
+				String res = 	transform.apply(doc);
+				res = replaceSpaceToEndLine.apply(res);
+				System.out.println(res);
+			}
+		}
+		System.out.println("After for loop and test by calling interface functions directly");
+		
+//		System.out.println(documents.get(0));
+		
+		
+		documents.forEach( (doc) -> {
+					if(p.test(doc)) {
+						System.out.println("stream keyword found");
+						String res = 	transform.apply(doc);
+						res = replaceSpaceToEndLine.apply(res);
+						System.out.println(res);
+					}
+					}
+				);
+		
+
+		FilterFunctionalInterface f = (str) -> str.contains("streams"); // this is lambda expression
+		
+		documents.forEach( (doc) -> {
+								if (f.checkKeyWord("streams")) {
+									System.out.println(doc);
+								}
+						}
+		);
+		
+		documents.stream().filter((doc)->f.checkKeyWord("streams")).forEach(System.out::println);
+
+		documents.stream().filter((doc)->doc.contains("streams")).forEach(System.out::println);
+			
+		
+		
+		
+	}
+	
+	public static void testStreamMaps() {
+//		List <String> l = Arrays.asList("1","2", "3", "4");
+//		List <Integer> il = l.stream().map(s->Integer.parseInt(s)).collect(Collectors.toList());
+//		Integer i = l.stream().mapToInt(s->Integer.parseInt(s)).sum();
+//		System.out.println(i);
+//		
+//		Function <String, String> foo= (p)->p.replace("g", "h");
+		
+		
+		List <String> stringList = Arrays.asList("a","b","c","d");
+		
+		List <String> stringList2 = stringList.stream().map(s->s.toUpperCase()).collect(Collectors.toList()).subList(1, 3).stream().map(s->s.concat("_*")).collect(Collectors.toList());
+		System.out.println(stringList);
+		System.out.println(stringList2);
+		
+		List <Integer> integerList = Arrays.asList(1,2,3,4);
+		integerList.stream().map(i->i*2).collect(Collectors.toList()).forEach(System.out::println);
+		
+		
+		//Play with flatmaps
+		
+		System.out.println();
+		String [][] arr = new String [][] {
+											{"a","b"},{"c","a"}
+										  };
+		
+		Arrays.stream(arr).map(s->s).filter(x->x.equals("a")).forEach(System.out::println);
+		Arrays.stream(arr).flatMap(s->Arrays.stream(s)).filter(x->x.equals("a")).forEach(System.out::println);
+		
+		//Collections, hashset, streams, flatmap
+		Student obj1 = new Student();
+        obj1.setName("mkyong");
+        obj1.addBook("Java 8 in Action");
+        obj1.addBook("Spring Boot in Action");
+        obj1.addBook("Effective Java (2nd Edition)");
+
+        Student obj2 = new Student();
+        obj2.setName("zilap");
+        obj2.addBook("Learning Python, 5th Edition");
+        obj2.addBook("Effective Java (2nd Edition)");
+
+        Student obj3 = new Student();
+        obj3.setName("zilap");
+        obj3.addBook("Learning Python, 5th Edition");
+        obj3.addBook("Effective Java (2nd Edition)");
+
+        
+        List<Student> list = new ArrayList<>();
+        list.add(obj1);
+        list.add(obj2);
+        list.add(obj3);
+        
+//        list.stream().map(x->x.get)
+        list.stream().map(x->x).distinct().forEach(System.out::println);
+        list.stream().distinct().collect(Collectors.toList()).forEach(System.out::println);
+        
+        System.out.println(list.stream().distinct().count());
+       
+        list.stream().map(s->s.getBook()).distinct().forEach(System.out::println);
+        
+        list.stream().map(s->s.getBook()).flatMap(b->b.stream()).distinct().forEach(System.out::println);
+        
+        //another way to get distinct books
+        System.out.println("\n\nanother way to get distinct books\n\n");
+        list.stream().flatMap(s->s.getBook().stream()).distinct().forEach(System.out::println);
+        
+        System.out.println("\n\nanother way to get distinct books\n\n");
+        list.stream().map(s->s.getBook().stream()).distinct().forEach(System.out::println);
+        // System.out.println(list);
+    
+        System.out.println("\n\nanother way to get distinct books and then apply filter\n\n");
+        list.stream().flatMap(s->s.getBook().stream()).distinct().collect(Collectors.toList()).stream().filter(s->s.contains("Java")).forEach(System.out::println);
+
+        System.out.println("\n\nanother way to get distinct books and then apply filter, findfirst  and find any \n\n");
+       
+       Optional<String> bookName =  list.stream().flatMap(s->s.getBook().stream()).distinct().collect(Collectors.toList()).stream()
+        	.filter(s->s.contains("Java")).findAny();
+        
+       if (bookName.isPresent()) {
+    	   System.out.println(bookName.get());
+       }
+       
+       list.stream().flatMap(s->s.getBook().stream()).distinct().collect(Collectors.toList()).stream()
+           	.filter(s->s.contains("Python")).findAny().ifPresent(System.out::println);
+          
+      
+   	List<Book> bookList2 = new ArrayList<Book>();
+	bookList2.add(new Book(2, "book 1", "Author1", 3.0));
+	bookList2.add(new Book(5, "book 2", "Author2", 4.0));
+	bookList2.add(new Book(6, "book 1", "Author1", 5.0));
+	bookList2.add(new Book(7, "book 2", "Author2", 6.0));
+
+	bookList2.stream().reduce(
+								(b1,b2) -> b1.getRating().compareTo(b2.getRating()) <= 0 ? b1:b2)
+							.ifPresent(b->System.out.println("low rating book is:" + b));
+	
+	
+	String s = Arrays.stream(arr).flatMap(a->Arrays.stream(a)).reduce("", (s1,s2)->s1+s2);
+	System.out.println(s);
+	
+	s = Arrays.stream(arr).flatMap( a->Arrays.stream(a)).reduce(new StringBuilder(), (sb,s1)->sb.append(s1), (sb1,sb2)->sb2.append(sb2)).toString();
+	System.out.println(s);
+	
+	
+	
+       // stringList.stream().skip(1).limit(2).forEach(System.out::println);
+        
+      //play with collectons and hasmaps, lambdas, streams and maps.
+	}
 	
 	public static void main(String[] arg) {
 		// collectionI_ArrayList();
@@ -335,6 +718,17 @@ public class CollectionPractice {
 //		linkListTest();
 		//arrayDequeTest();
 //		priorityQueueTest();
+//		hashSetTest();
+//		linkedHashSetTest();
+		
+//		sortedSetTest();
+		//navigableSetTest();
+//		hashMapTest();
+		//testFunctionInterfaces();
+		testStreamMaps();
 	}
 
+
 }
+
+
