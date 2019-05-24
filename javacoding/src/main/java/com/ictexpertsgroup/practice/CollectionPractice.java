@@ -1,6 +1,5 @@
 package com.ictexpertsgroup.practice;
 
-import java.lang.reflect.Array;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -24,9 +23,7 @@ import java.util.SortedSet;
 import java.util.TreeSet;
 import java.util.function.Function;
 import java.util.function.Predicate;
-import java.util.stream.Collector;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 /*
  * This class is created to test and practice different kind of collections.
@@ -592,9 +589,10 @@ public class CollectionPractice {
 						}
 		);
 		
-		documents.stream().filter((doc)->f.checkKeyWord("streams")).forEach(System.out::println);
+		System.out.println("\n\n:: Calling implemented function in interface class\n\n");
+		documents.stream().filter((doc)->f.evaluateKeyWord(doc)).forEach(System.out::println);
 
-		documents.stream().filter((doc)->doc.contains("streams")).forEach(System.out::println);
+	//	documents.stream().filter((doc)->doc.contains("streams")).forEach(System.out::println);
 			
 		
 		
@@ -724,8 +722,8 @@ public class CollectionPractice {
 //		sortedSetTest();
 		//navigableSetTest();
 //		hashMapTest();
-		//testFunctionInterfaces();
-		testStreamMaps();
+		testFunctionInterfaces();
+		//testStreamMaps();
 	}
 
 
