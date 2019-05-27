@@ -42,5 +42,6 @@ public class ThreadTesterCyclicBarrier implements Runnable {
 		ThreadTesterCyclicBarrier ttcb = new ThreadTesterCyclicBarrier();
 		Thread mt = new Thread(ttcb);
 		mt.start();
+		System.out.println("after main thread.");
 	}
 }
